@@ -7,7 +7,7 @@ Memory.About.prototype = {
 
 		Memory.soundControl = this.add.button(940, 0, Memory.getPauseString(), Memory.toggleMusic);
 
-		var textString = "Created by Angela Petruseva (*After I upload*)\n\n" + 
+		var textString = "Created by Angela Petruseva (https://github.com/angelapetruseva)\n\n" + 
 						 "Music & sound effects by Eric Matyas - www.soundimage.org\n" +
 						 "(Cyber Dream Loop, UI_Quirky3, and UI_Quirky7)\n\n" +
 						 "Card icons by Lorc, sbed, and skoll - game-icons.net\n\n" +
