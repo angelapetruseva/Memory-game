@@ -45,6 +45,9 @@ Memory.Preloader.prototype = {
 		this.load.image('card', 'assets/spr-card.png');
 		this.load.atlasJSONArray('cards', 'assets/cards/cards.png', 'assets/cards/cards.json');
 		this.load.image('confetti', 'assets/confetti.png');
+
+		this.load.image('wrong', 'assets/wrong.png');
+		this.load.image('right', 'assets/right.png');
 		
 		this.load.audio('music', 'assets/sound/music.mp3');
 		this.load.audio('click', 'assets/sound/click.mp3');

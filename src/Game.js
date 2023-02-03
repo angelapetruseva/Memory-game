@@ -5,9 +5,13 @@ var box = null;
 var emitter = null;
 var click = null;
 var ding = null;
+var wrong = null;
+var right  = null;
+var txt = null;
+var txt2 = null;
 
 var rows;
-var columns;
+var tilesLeft;
 
 var cardWidth;
 var cardSpacing;
@@ -28,11 +32,11 @@ var tilesLeft = 10;
 Memory.Game.prototype = {
 	create: function () {
 		rows = 0
-		columns = Memory.gridCols;
+		tilesLeft = Memory.gridCols;
 		cardWidth = 100;
 		cardSpacing = 20;
 		var topBarHeight = 60;
-		var rowWidth = (cardWidth + cardSpacing) * (columns - 1) + cardWidth;
+		var rowWidth = (cardWidth + cardSpacing) * (tilesLeft - 1) + cardWidth;
 		var columnHeight = (cardWidth + cardSpacing) * (4 - 1) + cardWidth;
 		leftMargin = (1000 - rowWidth) / 2;
 		topMargin = (560 - topBarHeight - columnHeight) / 2 + topBarHeight;
@@ -41,16 +45,14 @@ Memory.Game.prototype = {
 		cardValues = new Array(); // an array with the value of each card
 
 		moves = 0;
-		tilesLeft = columns * 1;
 
 		click = this.add.audio('click');
 		ding = this.add.audio('ding');
 
 		var background = this.add.sprite(0, 0, 'gameBkgd');
 		movesText = this.add.text(215, 1, "0", {
-			font: "54px Arial",
+			font: "50px Arial",
 			fill: "white",
-			fontWeight: "bold"
 		});
 
 		Memory.soundControl = this.add.button(940, 0, Memory.getPauseString(), Memory.toggleMusic);
@@ -65,16 +67,22 @@ Memory.Game.prototype = {
 	},
 
 	createGrid: function () {
-		for (var j = 0; j < columns; j++) {
+		for (var j = 0; j < tilesLeft; j++) {
 			var c = this.add.sprite(leftMargin + (cardWidth + cardSpacing) * j,
 				topMargin + (cardWidth + cardSpacing), 'card');
 			cards.push(c);
 			c.inputEnabled = true;
 		}
 
+			txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
+				font: "50px Arial",
+				fill: "white",
+			});
+		
+
 		setTimeout(() => {
 
-			nextLevel()
+			nextLevel(null, this);
 
 		}, 3000);
 	},
@@ -159,9 +167,18 @@ Memory.Game.prototype = {
 };
 
 
-const nextLevel = (imp) => {
+const nextLevel = (imp, arg) => {
+
+	txt2.destroy(true);
 
 	setTimeout(function () {
+
+		if (arg) {
+			txt = arg.add.text(170, 100, "Одбери која слика се смени:", {
+				font: "50px Arial",
+				fill: "white",
+			});
+		}
 
 		cards.forEach(el => {
 			el.loadTexture('cards', el.cardValue);
@@ -172,8 +189,7 @@ const nextLevel = (imp) => {
 			imp.enabled = true;
 		};
 
-
-	}, 3000)
+	}, 1000)
 
 	cards.forEach(el => {
 		arrOfValues.push(el.cardValue);
@@ -221,16 +237,37 @@ function checkClick(obj, x, index) {
 			arrOfValues = [];
 			firstArray = [];
 			secondArray = [];
+	
+			right = this.add.sprite(200, 0, 'right', {
+				setScale: .5,
+			});
+
+			setTimeout(() => {
+				right.destroy(true);
+				txt.destroy(true)
+				txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
+					font: "50px Arial",
+					fill: "white",
+				});
+			}, 500);
 
 			setTimeout(() => {
 				cards.forEach(el => el.loadTexture('card'));
-				nextLevel(imp)
+				nextLevel(imp, this)
 			}, 3000);
 			moves++;
 
 		} else if (firstArray.includes(c.cardValue)) {
 			
 			// no match
+			wrong = this.add.sprite(200, 0, 'wrong', {
+				setScale: .5,
+			});
+
+			setTimeout(() => {
+				wrong.destroy(true)
+			}, 500);
+
 			click.play();
 			moves++;
 

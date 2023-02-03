@@ -32762,7 +32762,7 @@ Phaser.Group.prototype.updateZ = function () {
 * 
 * `Group.align(25, 4, 32, 32)`
 *
-* This will align the children into a grid of 25x4, again using 32 pixels per grid cell.
+* This will align the children into a grid of 25, again using 32 pixels per grid cell.
 *
 * You can choose to set _either_ the `width` or `height` value to -1. Doing so tells the method
 * to keep on aligning children until there are no children left. For example if this Group had
