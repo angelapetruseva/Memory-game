@@ -49,7 +49,7 @@ Memory.Game.prototype = {
 		var background = this.add.sprite(0, 0, 'gameBkgd');
 		movesText = this.add.text(215, 1, "0", {
 			font: "54px Arial",
-			fill: "#617edf",
+			fill: "white",
 			fontWeight: "bold"
 		});
 

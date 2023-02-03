@@ -13,7 +13,7 @@ Memory.About.prototype = {
 						 "Card icons by Lorc, sbed, and skoll - game-icons.net\n\n" +
 						 "Built using the Phaser engine";
 						 
-		var style = {font: "24px Arial", fill: "#617ddf"};
+		var style = {font: "24px Arial", fill: "black"};
 
 		var text = this.add.text(50, 50, textString, style);
 
