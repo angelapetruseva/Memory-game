@@ -115,13 +115,13 @@ Memory.Game.prototype = {
 		var scoresText = this.add.sprite(500, 130, 'scoreText');
 		scoresText.anchor.set(0.5, 0);
 
-		var txtMoves = this.add.text(590, 75, moves, {
-			font: "54px Arial",
+		var txtMoves = this.add.text(700, 75, moves, {
+			font: "40px Arial",
 			fill: "#ffffff",
 			fontWeight: "bold"
 		});
-		var txtScore = this.add.text(580, 145, localStorage[Memory.findScoreText()], {
-			font: "54px Arial",
+		var txtScore = this.add.text(700, 145, localStorage[Memory.findScoreText()], {
+			font: "40px Arial",
 			fill: "#ffffff",
 			fontWeight: "bold"
 		});
