@@ -23,12 +23,12 @@ Memory.Scores.prototype = {
 		var s5 = this.add.image(550, 225, 'scoreMed2');
 		var s6 = this.add.image(550, 330, 'scoreHuge');
 		
-		s1Text = this.add.text(300, 135, localStorage["4x3score"], {font: "64px Arial", fill: "#ffffff"});
-		s2Text = this.add.text(300, 240, localStorage["5x4score"], {font: "64px Arial", fill: "#ffffff"});
-		s3Text = this.add.text(320, 347, localStorage["7x4score"], {font: "64px Arial", fill: "#ffffff"});
-		s4Text = this.add.text(770, 147, localStorage["4x4score"], {font: "64px Arial", fill: "#ffffff"});
-		s5Text = this.add.text(770, 240, localStorage["6x4score"], {font: "64px Arial", fill: "#ffffff"});
-		s6Text = this.add.text(770, 350, localStorage["8x4score"], {font: "64px Arial", fill: "#ffffff"});
+		s1Text = this.add.text(300, 135, localStorage["3score"], {font: "64px Arial", fill: "#ffffff"});
+		s2Text = this.add.text(300, 240, localStorage["5score"], {font: "64px Arial", fill: "#ffffff"});
+		s3Text = this.add.text(320, 347, localStorage["7score"], {font: "64px Arial", fill: "#ffffff"});
+		s4Text = this.add.text(770, 147, localStorage["4score"], {font: "64px Arial", fill: "#ffffff"});
+		s5Text = this.add.text(770, 240, localStorage["6score"], {font: "64px Arial", fill: "#ffffff"});
+		s6Text = this.add.text(770, 350, localStorage["8score"], {font: "64px Arial", fill: "#ffffff"});
 		
 		if (Memory.supportsStorage()) {
 			var clearButton = this.add.button(525, 450, 'clearButton', function() {Memory.clearStorage(); this.refreshText()}, this);
@@ -38,12 +38,12 @@ Memory.Scores.prototype = {
 	},
 	
 	refreshText: function() {
-		s1Text.text = localStorage["4x3score"];
-		s2Text.text = localStorage["4x4score"];
-		s3Text.text = localStorage["5x4score"];
-		s4Text.text = localStorage["6x4score"];
-		s5Text.text = localStorage["7x4score"];
-		s6Text.text = localStorage["8x4score"];
+		s1Text.text = localStorage["3score"];
+		s2Text.text = localStorage["4score"];
+		s3Text.text = localStorage["5score"];
+		s4Text.text = localStorage["6score"];
+		s5Text.text = localStorage["7score"];
+		s6Text.text = localStorage["8score"];
 	},
 
 	gotoMenu: function () {

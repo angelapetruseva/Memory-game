@@ -27,28 +27,28 @@ var Memory = {
 		}	
 	},
 	clearStorage: function() {
-		localStorage["4x3score"] = 0;
-		localStorage["4x4score"] = 0;
-		localStorage["5x4score"] = 0;
-		localStorage["6x4score"] = 0;
-		localStorage["7x4score"] = 0;
-		localStorage["8x4score"] = 0;
+		localStorage["3score"] = 0;
+		localStorage["4score"] = 0;
+		localStorage["5score"] = 0;
+		localStorage["6score"] = 0;
+		localStorage["7score"] = 0;
+		localStorage["8score"] = 0;
 	},
 	findScoreText: function() {
 		var scoreString = "";
 		
 		if (Memory.gridCols == 4 && Memory.gridRows == 3) {
-			scoreString = "4x3score";
+			scoreString = "3score";
 		} else if (Memory.gridCols == 4 && Memory.gridRows == 4) {
-			scoreString = "4x4score";
+			scoreString = "4score";
 		} else if (Memory.gridCols == 5) {
-			scoreString = "5x4score";
+			scoreString = "5score";
 		} else if (Memory.gridCols == 6) {
-			scoreString = "6x4score";
+			scoreString = "6score";
 		} else if (Memory.gridCols == 7) {
-			scoreString = "7x4score";
+			scoreString = "7score";
 		} else if (Memory.gridCols == 8) {
-			scoreString = "8x4score";
+			scoreString = "8score";
 		}
 		
 		return scoreString;
