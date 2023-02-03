@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Memory</title>
+	<script src="src/phaser.js"></script>
+	<script src="src/Boot.js"></script>
+	<script src="src/Preloader.js"></script>
+	<script src="src/MainMenu.js"></script>
+	<script src="src/About.js"></script>
+	<script src="src/Scores.js"></script>
+	<script src="src/GridSelect.js"></script>
+	<script src="src/Game.js"></script>
+
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Crete+Round|Niramit" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<a href="https://github.com/angelapetruseva/Memory-game/"><span
+					class="glyphicon glyphicon-menu-left"></span>View source code</a>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div id="gameContainer"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<h1>Memory</h1>
+				<p>This is a classic memory game where the player is challenged to recall which image has changed among
+					the amount of pictures he has chosen. The pictures appear on the screen and then disappear. If the
+					guess is correct, the pictures will disappear again and the player will have to guess again.
+					<br>The objective is to remember the sequence of images and identify the changing picture each time.
+					This game tests and improves the player's memory and observation skills.</p>
+				<h2>How to Play</h2>
+				<p>The player has to guess which one has changed by clicking on it.</p>
+			</div>
+			<div class="col-md-4">
+				<h2>Details</h2>
+				<table class="table table-responsive">
+					<tbody>
+						<tr>
+							<td><strong>Language(s):</strong></td>
+							<td>JavaScript</td>
+						</tr>
+						<tr>
+							<td><strong>Framework/Engine:</strong></td>
+							<td>Phaser</td>
+						</tr>
+						<tr>
+							<td><strong>Mobile Friendly:</strong></td>
+							<td>Partially</td>
+						</tr>
+						<tr>
+							<td><strong>Credits:</strong></td>
+							<td><a href="https://github.com/angelapetruseva/Memory-game#credits" target="_blank">Click
+									here</a></td>
+						</tr>
+						<tr>
+							<td><strong>Published:</strong></td>
+							<td>03/02/2023</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		window.onload = function () {
+			var game = new Phaser.Game(1000, 560, Phaser.AUTO, 'gameContainer');
+
+			game.state.add('Boot', Memory.Boot);
+			game.state.add('Preloader', Memory.Preloader);
+			game.state.add('MainMenu', Memory.MainMenu);
+			game.state.add('About', Memory.About);
+			game.state.add('Scores', Memory.Scores);
+			game.state.add('GridSelect', Memory.GridSelect);
+			game.state.add('Game', Memory.Game);
+			game.state.start('Boot');
+		};
+	</script>
+</body>
+
+</html>
