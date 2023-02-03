@@ -7,7 +7,7 @@ The objective is to remember the sequence of images and identify the changing pi
 The player has to guess which one has changed by clicking on it.
 
 ## Credits
-Created by [Angela Petruseva]()
+Created by [Angela Petruseva](https://angelapetruseva.github.io/Memory-game/)
 
 Music & sound effects by [Eric Matyas](http://soundimage.org/)
 (Cyber Dream Loop, UI_Quirky3, and UI_Quirky7)
