@@ -38,12 +38,12 @@ Memory.Scores.prototype = {
 	},
 	
 	refreshText: function() {
-		s1Text.text = localStorage["3score"];
-		s2Text.text = localStorage["4score"];
-		s3Text.text = localStorage["5score"];
-		s4Text.text = localStorage["6score"];
-		s5Text.text = localStorage["7score"];
-		s6Text.text = localStorage["8score"];
+		s1Text.text = localStorage["3score"] || 0;
+		s2Text.text = localStorage["4score"] || 0;
+		s3Text.text = localStorage["5score"] || 0;
+		s4Text.text = localStorage["6score"] || 0;
+		s5Text.text = localStorage["7score"] || 0;
+		s6Text.text = localStorage["8score"] || 0;
 	},
 
 	gotoMenu: function () {
