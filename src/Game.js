@@ -70,7 +70,7 @@ Memory.Game.prototype = {
 		});
 
 		Memory.soundControl = this.add.button(940, 0, Memory.getPauseString(), Memory.toggleMusic);
-		var quitButton = this.add.button(870, 10, 'quitButton', this.quitGame, this);
+		var quitButton = this.add.button(10, 11, 'quitButton', this.quitGame, this);
 
 		this.createGrid();
 		this.assignCards();
@@ -262,7 +262,8 @@ function timer() {
 	count = count - 1;
 	if (count < 0) {
 		clearInterval(counter);
-		checkClick(true)
+		checkClick(true);
+		count = 30;
 
 		return;
 	}
@@ -338,7 +339,7 @@ function checkClick(checkWin, sth, sth2, index) {
 
 		}
 	} else {
-		this.winGame;
+		console.log(this.winGame);
 		arrOfValues = [];
 		firstArray = [];
 		secondArray = [];
