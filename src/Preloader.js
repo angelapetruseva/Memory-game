@@ -1,7 +1,7 @@
 Memory.Preloader = function (game) {
 	this.background = null;
 	this.preloadBar = null;
-	
+
 	this.ready = false;
 };
 
@@ -33,7 +33,7 @@ Memory.Preloader.prototype = {
 		this.load.image('gameOverMenu', 'assets/gameover-menu.png');
 		this.load.image('gameOverReplay', 'assets/gameover-replay.png');
 		this.load.image('gameOverSize', 'assets/gameover-size.png');
-		this.load.image('movesText', 'assets/text-moves.png');
+		this.load.image('correctText', 'assets/text-moves.png');
 		this.load.image('scoreText', 'assets/text-bestscore.png');
 		
 		this.load.atlasJSONArray('sizeButtons', 'assets/size-buttons.png', 'assets/size-buttons.json');
