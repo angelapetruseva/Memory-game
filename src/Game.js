@@ -15,12 +15,15 @@ var txt4 = null;
 var txt5 = null;
 
 var correct;
-var count = 10;
+var count;
 var moves;
 
 var rows;
 
 var checkWin;
+
+var counter;
+
 
 var cardWidth;
 var cardSpacing;
@@ -47,11 +50,8 @@ Memory.Game.prototype = {
 		leftMargin = (1000 - rowWidth) / 2;
 		topMargin = (560 - topBarHeight - columnHeight) / 2 + topBarHeight;
 
-		cards = new Array(); //  contains actual card elements
-		cardValues = new Array(); // an array with the value of each card
-
 		moves = 0;
-		count = 30;
+		count = 10;
 		correct = 0;
 
 		function destroyer(st) {
@@ -87,23 +87,54 @@ Memory.Game.prototype = {
 		Memory.soundControl = this.add.button(940, 0, Memory.getPauseString(), Memory.toggleMusic);
 		var quitButton = this.add.button(0, 11, 'quitButton', this.quitGame, this);
 
+		cards = [];
+		cardValues = [];
+
+		// cards = new Array(); //  contains actual card elements
+		// cardValues = new Array(); // an array with the value of each card
+
+
 		this.createGrid();
 		this.assignCards();
+
+		counter = setInterval(timer, 1000)
+
+
+		// cards.forEach(el => {
+		// 	el.clickable = false;
+		// 	el.inputEnabled = false;
+		// })
 
 		emitter = this.add.emitter(500, 100, 300);
 		emitter.makeParticles('confetti');
 		emitter.gravity = 200;
 
+		if (Memory.supportsStorage()) {
+			this.saveScore();
+		}
+		if (right) {
+			right.destroy(true);
+		};
+		if (wrong) {
+			wrong.destroy(true);
+		};
+		if (txt) {
+			txt.destroy(true);
+		};
+
 		checkWin = (sth) => {
 			if (sth) {
+				count = 30;
+				counter = null;
 				this.winGame()
 				destroyer(right)
 				destroyer(wrong)
 				destroyer(txt2)
 				destroyer(txt)
+				// counter = null;
 			}
-			
-		} 
+
+		}
 	},
 
 	createGrid: function () {
@@ -142,31 +173,31 @@ Memory.Game.prototype = {
 			//console.log("cards[" + i + "] has the card " + cardValues[randNum]);
 			cardValues.splice(randNum, 1);
 			// add a listener for clicking on the card that passes the card's index in the array as an arg
-			cards[i].clickable = true;
+			cards[i].clickable = false;
 			cards[i].events.onInputDown.add(checkClick, this, 0, i);
-			cards[i].clickable = true;
 			cards[i].loadTexture('cards', cards[i].cardValue)
 
 		}
 	},
 
 	winGame: function () {
-		count = 30;
+		counter = null;
+		// count = 15;
 		if (Memory.supportsStorage()) {
 			this.saveScore();
 		}
 		if (right) {
 			right.destroy(true);
 		};
-		if(wrong) {
+		if (wrong) {
 			wrong.destroy(true);
 		};
 		if (txt) {
 			txt.destroy(true);
 		};
-		if(txt2) {
-			txt2.destroy(true)
-		}
+		if (txt2) {
+			txt2.destroy(true);
+		};
 
 		box = this.add.sprite(500, 280, 'gameOverBox');
 		box.anchor.set(0.5, 0.5);
@@ -191,11 +222,13 @@ Memory.Game.prototype = {
 
 		var menuBtn = this.add.button(500, 240, 'gameOverMenu', function () {
 			this.state.start('MainMenu')
-			
+
 		}, this);
 		menuBtn.anchor.set(0.5, 0);
 		var replayBtn = this.add.button(500, 330, 'gameOverReplay', function () {
 			this.state.start('Game')
+
+			
 		}, this);
 		replayBtn.anchor.set(0.5, 0);
 		var sizeBtn = this.add.button(500, 420, 'gameOverSize', function () {
@@ -277,23 +310,21 @@ function nextLevel(imp, arg) {
 
 }
 
-var counter = setInterval(timer, 1000)
+function timer(counter) {
+	if (count > 0) {
+		count = count - 1;
+	} else if (count <= 0 && checkWin) {
+			count = 10;
+			checkWin(true)
+		}
+		if (txt4 && txt3 && txt5) {
+			txt4.text = `Време: ${count}`;
+			txt3.text = `Погодоци: ${correct}`;
+			txt5.text = `Потези: ${moves}`;
+		}
 
-function timer() {
-	count = count - 1;
-	if (count < 0) {
-		
-		count = 0;
-
-		checkWin(true)
-
-		return;
-	}
-	if (txt4 && txt3 && txt5) {
-		txt4.text = `Време: ${count}`;
-		txt3.text = `Погодоци: ${correct}`;
-		txt5.text = `Потези: ${moves}`;
-	}
+	// }
+	
 
 }
 
@@ -310,16 +341,15 @@ function checkClick(obj, x, index) {
 			moves++;
 			correct++;
 			ding.play();
-			// tilesLeft -= 1;
 
 			arrOfValues = [];
 			firstArray = [];
 			secondArray = [];
-if (wrong) {
-	wrong.destroy(true)
 
-}
-			
+			if (wrong) {
+				wrong.destroy(true)
+
+			}
 
 			right = this.add.sprite(200, 0, 'right', {
 				setScale: .5,
@@ -332,23 +362,26 @@ if (wrong) {
 					font: "50px Arial",
 					fill: "white",
 				});
+				c.clickable = true;
+				imp.enabled = true;
 			}, 500);
 
 			setTimeout(() => {
 				cards.forEach(el => {
-					// el.events.onInputOver.removeAll();
-					// el.events.onInputOut.removeAll();
 					el.loadTexture('card');
 				});
 				nextLevel(imp, this)
 			}, 3000);
-			c.inputEnabled = true;
+			// c.inputEnabled = true;
 
+			// arrOfValues = [];
+			// firstArray = [];
+			// secondArray = [];
 
 		} else if (firstArray.includes(c.cardValue)) {
 
 			moves++;
-			imp.enabled = true;
+			// imp.enabled = true;
 			// no match
 			wrong = this.add.sprite(200, 0, 'wrong', {
 				setScale: .5,
@@ -357,27 +390,24 @@ if (wrong) {
 			c.clickable = false;
 			c.inputEnabled = false;
 
-
-
 			setTimeout(() => {
 				wrong.destroy(true)
 				c.clickable = true;
-			c.inputEnabled = true;
+				c.inputEnabled = true;
 			}, 500);
 
 			click.play();
 
+			// arrOfValues = [];
+			// firstArray = [];
+			// secondArray = [];
+
 		}
 
-
-	}
-	// correctText.text = correct;
-	//  check if player won game
-	// if (count <= 0) {
-	// 	this.winGame();
+	} 
+	// else if (count = 0) {
 	// 	arrOfValues = [];
 	// 	firstArray = [];
 	// 	secondArray = [];
-	// 	imp.enabled = false;
 	// }
 }
