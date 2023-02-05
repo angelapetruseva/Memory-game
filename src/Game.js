@@ -1,6 +1,6 @@
 Memory.Game = function (game) {};
 
-var movesText = null;
+var correctText = null;
 var box = null;
 var emitter = null;
 var click = null;
@@ -15,10 +15,12 @@ var txt4 = null;
 var txt5 = null;
 
 var correct;
-var count = 30;
+var count = 10;
 var moves;
 
 var rows;
+
+var checkWin;
 
 var cardWidth;
 var cardSpacing;
@@ -83,7 +85,7 @@ Memory.Game.prototype = {
 		});
 
 		Memory.soundControl = this.add.button(940, 0, Memory.getPauseString(), Memory.toggleMusic);
-		var quitButton = this.add.button(10, 11, 'quitButton', this.quitGame, this);
+		var quitButton = this.add.button(0, 11, 'quitButton', this.quitGame, this);
 
 		this.createGrid();
 		this.assignCards();
@@ -91,6 +93,17 @@ Memory.Game.prototype = {
 		emitter = this.add.emitter(500, 100, 300);
 		emitter.makeParticles('confetti');
 		emitter.gravity = 200;
+
+		checkWin = (sth) => {
+			if (sth) {
+				this.winGame()
+				destroyer(right)
+				destroyer(wrong)
+				destroyer(txt2)
+				destroyer(txt)
+			}
+			
+		} 
 	},
 
 	createGrid: function () {
@@ -138,6 +151,7 @@ Memory.Game.prototype = {
 	},
 
 	winGame: function () {
+		count = 30;
 		if (Memory.supportsStorage()) {
 			this.saveScore();
 		}
@@ -161,10 +175,10 @@ Memory.Game.prototype = {
 		var scoresText = this.add.sprite(500, 130, 'scoreText');
 		scoresText.anchor.set(0.5, 0);
 
-		var thisScore = this.add.sprite(500, 90, 'movesText');
+		var thisScore = this.add.sprite(500, 82, 'correctText');
 		thisScore.anchor.set(0.5, 0);
 
-		var txtMoves = this.add.text(700, 98, correct, {
+		var txtMoves = this.add.text(650, 95, correct, {
 			font: "40px Arial",
 			fill: "#ffffff",
 			fontWeight: "bold"
@@ -177,6 +191,7 @@ Memory.Game.prototype = {
 
 		var menuBtn = this.add.button(500, 240, 'gameOverMenu', function () {
 			this.state.start('MainMenu')
+			
 		}, this);
 		menuBtn.anchor.set(0.5, 0);
 		var replayBtn = this.add.button(500, 330, 'gameOverReplay', function () {
@@ -207,13 +222,6 @@ Memory.Game.prototype = {
 	}
 };
 
-// function over(sprite) {
-// 	sprite.alpha = 0.5;
-// }
-
-// function out(sprite) {
-// 	sprite.alpha = 1;
-// }
 
 function nextLevel(imp, arg) {
 
@@ -231,10 +239,6 @@ function nextLevel(imp, arg) {
 		cards.forEach(el => {
 			el.loadTexture('cards', el.cardValue);
 			el.clickable = true;
-			// 			el.inputEnabled = true;
-			// el.input.useHandCursor = true;
-			// el.events.onInputOver.add(over, this);
-			// el.events.onInputOut.add(out, this);
 		});
 
 		if (imp) {
@@ -247,10 +251,6 @@ function nextLevel(imp, arg) {
 		arrOfValues.push(el.cardValue);
 		firstArray.push(el.cardValue);
 		el.clickable = false;
-		// el.events.onInputOver.removeAll();
-		// el.events.onInputOut.removeAll();
-		// el.events.onInputDown.removeAll();
-		// el.input.useHandCursor = false;
 	})
 
 	if (imp) {
@@ -280,16 +280,12 @@ function nextLevel(imp, arg) {
 var counter = setInterval(timer, 1000)
 
 function timer() {
-	// if (count == 0) {
-	// 	checkClick(checkWin);
-	// } else {
 	count = count - 1;
 	if (count < 0) {
-		// clearInterval(counter);
+		
 		count = 0;
-		// checkClick(false, false, false, true)
-		// checkClick(true);
-		// count = 30;
+
+		checkWin(true)
 
 		return;
 	}
@@ -311,6 +307,7 @@ function checkClick(obj, x, index) {
 		if (!firstArray.includes(c.cardValue) && secondArray.includes(c.cardValue)) {
 
 			imp.enabled = true;
+			moves++;
 			correct++;
 			ding.play();
 			// tilesLeft -= 1;
@@ -318,6 +315,11 @@ function checkClick(obj, x, index) {
 			arrOfValues = [];
 			firstArray = [];
 			secondArray = [];
+if (wrong) {
+	wrong.destroy(true)
+
+}
+			
 
 			right = this.add.sprite(200, 0, 'right', {
 				setScale: .5,
@@ -340,7 +342,6 @@ function checkClick(obj, x, index) {
 				});
 				nextLevel(imp, this)
 			}, 3000);
-			moves++;
 			c.inputEnabled = true;
 
 
@@ -353,26 +354,30 @@ function checkClick(obj, x, index) {
 				setScale: .5,
 			});
 
+			c.clickable = false;
+			c.inputEnabled = false;
+
 
 
 			setTimeout(() => {
 				wrong.destroy(true)
+				c.clickable = true;
+			c.inputEnabled = true;
 			}, 500);
 
 			click.play();
-			c.inputEnabled = true;
 
 		}
 
 
 	}
-	// movesText.text = correct;
+	// correctText.text = correct;
 	//  check if player won game
-	if (count <= 0) {
-		this.winGame();
-		arrOfValues = [];
-		firstArray = [];
-		secondArray = [];
-		imp.enabled = false;
-	}
+	// if (count <= 0) {
+	// 	this.winGame();
+	// 	arrOfValues = [];
+	// 	firstArray = [];
+	// 	secondArray = [];
+	// 	imp.enabled = false;
+	// }
 }
