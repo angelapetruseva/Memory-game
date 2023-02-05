@@ -14,8 +14,8 @@ var txt3 = null;
 var txt4 = null;
 var txt5 = null;
 
-var correct = 0;
-var count = 5;
+var correct;
+var count = 30;
 var moves;
 
 var rows;
@@ -49,6 +49,19 @@ Memory.Game.prototype = {
 		cardValues = new Array(); // an array with the value of each card
 
 		moves = 0;
+		count = 30;
+		correct = 0;
+
+		function destroyer(st) {
+			if (st) {
+				st.destroy(true)
+			};
+		}
+		destroyer(right)
+		destroyer(wrong)
+		destroyer(txt2)
+		destroyer(txt)
+
 
 		click = this.add.audio('click');
 		ding = this.add.audio('ding');
@@ -116,7 +129,8 @@ Memory.Game.prototype = {
 			//console.log("cards[" + i + "] has the card " + cardValues[randNum]);
 			cardValues.splice(randNum, 1);
 			// add a listener for clicking on the card that passes the card's index in the array as an arg
-			cards[i].events.onInputDown.add(checkClick, false, this, 0, i);
+			cards[i].clickable = true;
+			cards[i].events.onInputDown.add(checkClick, this, 0, i);
 			cards[i].clickable = true;
 			cards[i].loadTexture('cards', cards[i].cardValue)
 
@@ -127,6 +141,18 @@ Memory.Game.prototype = {
 		if (Memory.supportsStorage()) {
 			this.saveScore();
 		}
+		if (right) {
+			right.destroy(true);
+		};
+		if(wrong) {
+			wrong.destroy(true);
+		};
+		if (txt) {
+			txt.destroy(true);
+		};
+		if(txt2) {
+			txt2.destroy(true)
+		}
 
 		box = this.add.sprite(500, 280, 'gameOverBox');
 		box.anchor.set(0.5, 0.5);
@@ -135,21 +161,19 @@ Memory.Game.prototype = {
 		var scoresText = this.add.sprite(500, 130, 'scoreText');
 		scoresText.anchor.set(0.5, 0);
 
-		// var txtMoves = this.add.text(700, 75, moves, {
-		// 	font: "40px Arial",
-		// 	fill: "#ffffff",
-		// 	fontWeight: "bold"
-		// });
-		// var txtScore = this.add.text(700, 145, localStorage[Memory.findScoreText()], {
-		// 	font: "40px Arial",
-		// 	fill: "#ffffff",
-		// 	fontWeight: "bold"
-		// });
+		var thisScore = this.add.sprite(500, 90, 'movesText');
+		thisScore.anchor.set(0.5, 0);
 
-		// count = 30;
-		// correct = 0;
-
-
+		var txtMoves = this.add.text(700, 98, correct, {
+			font: "40px Arial",
+			fill: "#ffffff",
+			fontWeight: "bold"
+		});
+		var txtScore = this.add.text(700, 145, localStorage[Memory.findScoreText()], {
+			font: "40px Arial",
+			fill: "#ffffff",
+			fontWeight: "bold"
+		});
 
 		var menuBtn = this.add.button(500, 240, 'gameOverMenu', function () {
 			this.state.start('MainMenu')
@@ -261,9 +285,11 @@ function timer() {
 	// } else {
 	count = count - 1;
 	if (count < 0) {
-		clearInterval(counter);
-		checkClick(true);
-		count = 30;
+		// clearInterval(counter);
+		count = 0;
+		// checkClick(false, false, false, true)
+		// checkClick(true);
+		// count = 30;
 
 		return;
 	}
@@ -273,75 +299,80 @@ function timer() {
 		txt5.text = `Потези: ${moves}`;
 	}
 
-	// }
-
 }
 
-function checkClick(checkWin, sth, sth2, index) {
-	//  check if player won game
-	if (!checkWin) {
+function checkClick(obj, x, index) {
 
-		var c = cards[index];
-		var imp = this.input.mouse;
+	var c = cards[index];
+	var imp = this.input.mouse;
 
-		if (c.clickable) {
+	if (c.clickable) {
 
-			if (!firstArray.includes(c.cardValue) && secondArray.includes(c.cardValue)) {
+		if (!firstArray.includes(c.cardValue) && secondArray.includes(c.cardValue)) {
 
-				// imp.enabled = true;
-				correct++;
-				ding.play();
-				// tilesLeft -= 1;
+			imp.enabled = true;
+			correct++;
+			ding.play();
+			// tilesLeft -= 1;
 
-				arrOfValues = [];
-				firstArray = [];
-				secondArray = [];
+			arrOfValues = [];
+			firstArray = [];
+			secondArray = [];
 
-				right = this.add.sprite(200, 0, 'right', {
-					setScale: .5,
+			right = this.add.sprite(200, 0, 'right', {
+				setScale: .5,
+			});
+
+			setTimeout(() => {
+				right.destroy(true);
+				txt.destroy(true)
+				txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
+					font: "50px Arial",
+					fill: "white",
 				});
+			}, 500);
 
-				setTimeout(() => {
-					right.destroy(true);
-					txt.destroy(true)
-					txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
-						font: "50px Arial",
-						fill: "white",
-					});
-				}, 500);
-
-				setTimeout(() => {
-					cards.forEach(el => {
-						// el.events.onInputOver.removeAll();
-						// el.events.onInputOut.removeAll();
-						el.loadTexture('card');
-					});
-					nextLevel(imp, this)
-				}, 3000);
-				moves++;
-
-			} else if (firstArray.includes(c.cardValue)) {
-
-				// no match
-				wrong = this.add.sprite(200, 0, 'wrong', {
-					setScale: .5,
+			setTimeout(() => {
+				cards.forEach(el => {
+					// el.events.onInputOver.removeAll();
+					// el.events.onInputOut.removeAll();
+					el.loadTexture('card');
 				});
+				nextLevel(imp, this)
+			}, 3000);
+			moves++;
+			c.inputEnabled = true;
 
-				setTimeout(() => {
-					wrong.destroy(true)
-				}, 500);
 
-				click.play();
-				moves++;
+		} else if (firstArray.includes(c.cardValue)) {
 
-			}
+			moves++;
+			imp.enabled = true;
+			// no match
+			wrong = this.add.sprite(200, 0, 'wrong', {
+				setScale: .5,
+			});
 
+
+
+			setTimeout(() => {
+				wrong.destroy(true)
+			}, 500);
+
+			click.play();
+			c.inputEnabled = true;
 
 		}
-	} else {
-		console.log(this.winGame);
+
+
+	}
+	// movesText.text = correct;
+	//  check if player won game
+	if (count <= 0) {
+		this.winGame();
 		arrOfValues = [];
 		firstArray = [];
 		secondArray = [];
+		imp.enabled = false;
 	}
 }
