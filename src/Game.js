@@ -6,12 +6,19 @@ var emitter = null;
 var click = null;
 var ding = null;
 var wrong = null;
-var right  = null;
+var right = null;
+
 var txt = null;
 var txt2 = null;
+var txt3 = null;
+var txt4 = null;
+var txt5 = null;
+
+var correct;
+var count = 30;
+var moves;
 
 var rows;
-var tilesLeft;
 
 var cardWidth;
 var cardSpacing;
@@ -25,9 +32,6 @@ var lastClickedIndex; // the index of the card that was last clicked
 var arrOfValues = []; //the first array which I'm about to modify 
 var firstArray = []; //array of values shown on screen first time
 var secondArray = []; // array of els shown on screen the second time
-
-var moves;
-var tilesLeft = 10;
 
 Memory.Game.prototype = {
 	create: function () {
@@ -45,18 +49,41 @@ Memory.Game.prototype = {
 		cardValues = new Array(); // an array with the value of each card
 
 		moves = 0;
+		count = 30;
+		correct = 0;
+
+		function destroyer(st) {
+			if (st) {
+				st.destroy(true)
+			};
+		}
+		destroyer(right)
+		destroyer(wrong)
+		destroyer(txt2)
+		destroyer(txt)
+
 
 		click = this.add.audio('click');
 		ding = this.add.audio('ding');
 
 		var background = this.add.sprite(0, 0, 'gameBkgd');
-		movesText = this.add.text(215, 1, "0", {
+
+		// txt.destroy(true)
+		txt3 = this.add.text(170, 330, `Погодоци: ${correct}`, {
+			font: "50px Arial",
+			fill: "white",
+		});
+		txt4 = this.add.text(170, 390, `Време: ${count}`, {
+			font: "50px Arial",
+			fill: "white",
+		});
+		txt5 = this.add.text(170, 450, `Потези: ${moves}`, {
 			font: "50px Arial",
 			fill: "white",
 		});
 
 		Memory.soundControl = this.add.button(940, 0, Memory.getPauseString(), Memory.toggleMusic);
-		var quitButton = this.add.button(870, 10, 'quitButton', this.quitGame, this);
+		var quitButton = this.add.button(10, 11, 'quitButton', this.quitGame, this);
 
 		this.createGrid();
 		this.assignCards();
@@ -67,6 +94,7 @@ Memory.Game.prototype = {
 	},
 
 	createGrid: function () {
+
 		for (var j = 0; j < tilesLeft; j++) {
 			var c = this.add.sprite(leftMargin + (cardWidth + cardSpacing) * j,
 				topMargin + (cardWidth + cardSpacing), 'card');
@@ -74,11 +102,11 @@ Memory.Game.prototype = {
 			c.inputEnabled = true;
 		}
 
-			txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
-				font: "50px Arial",
-				fill: "white",
-			});
-		
+		txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
+			font: "50px Arial",
+			fill: "white",
+		});
+
 
 		setTimeout(() => {
 
@@ -89,7 +117,7 @@ Memory.Game.prototype = {
 
 	assignCards: function () {
 		//  make an array to hold the possible values
-		for (var i = 0; i < 16; i++) {
+		for (var i = 0; i < 12; i++) {
 			cardValues.push(i);
 		}
 		//  add a value to each card
@@ -101,6 +129,7 @@ Memory.Game.prototype = {
 			//console.log("cards[" + i + "] has the card " + cardValues[randNum]);
 			cardValues.splice(randNum, 1);
 			// add a listener for clicking on the card that passes the card's index in the array as an arg
+			cards[i].clickable = true;
 			cards[i].events.onInputDown.add(checkClick, this, 0, i);
 			cards[i].clickable = true;
 			cards[i].loadTexture('cards', cards[i].cardValue)
@@ -112,18 +141,30 @@ Memory.Game.prototype = {
 		if (Memory.supportsStorage()) {
 			this.saveScore();
 		}
+		if (right) {
+			right.destroy(true);
+		};
+		if(wrong) {
+			wrong.destroy(true);
+		};
+		if (txt) {
+			txt.destroy(true);
+		};
+		if(txt2) {
+			txt2.destroy(true)
+		}
 
 		box = this.add.sprite(500, 280, 'gameOverBox');
 		box.anchor.set(0.5, 0.5);
 		box.alpha = 0.9;
 
-		var movesText = this.add.sprite(500, 60, 'movesText');
-		movesText.anchor.set(0.5, 0);
-
 		var scoresText = this.add.sprite(500, 130, 'scoreText');
 		scoresText.anchor.set(0.5, 0);
 
-		var txtMoves = this.add.text(700, 75, moves, {
+		var thisScore = this.add.sprite(500, 90, 'movesText');
+		thisScore.anchor.set(0.5, 0);
+
+		var txtMoves = this.add.text(700, 98, correct, {
 			font: "40px Arial",
 			fill: "#ffffff",
 			fontWeight: "bold"
@@ -159,15 +200,22 @@ Memory.Game.prototype = {
 		var scoreString = Memory.findScoreText();
 
 		if (localStorage[scoreString] == 0) {
-			localStorage[scoreString] = moves;
+			localStorage[scoreString] = correct;
 		} else {
-			localStorage[scoreString] = Math.min(moves, localStorage[scoreString]);
+			localStorage[scoreString] = Math.min(correct, localStorage[scoreString]);
 		}
 	}
 };
 
+// function over(sprite) {
+// 	sprite.alpha = 0.5;
+// }
 
-const nextLevel = (imp, arg) => {
+// function out(sprite) {
+// 	sprite.alpha = 1;
+// }
+
+function nextLevel(imp, arg) {
 
 	txt2.destroy(true);
 
@@ -183,18 +231,26 @@ const nextLevel = (imp, arg) => {
 		cards.forEach(el => {
 			el.loadTexture('cards', el.cardValue);
 			el.clickable = true;
+			// 			el.inputEnabled = true;
+			// el.input.useHandCursor = true;
+			// el.events.onInputOver.add(over, this);
+			// el.events.onInputOut.add(out, this);
 		});
 
 		if (imp) {
 			imp.enabled = true;
 		};
+	}, 500)
 
-	}, 1000)
 
 	cards.forEach(el => {
 		arrOfValues.push(el.cardValue);
 		firstArray.push(el.cardValue);
 		el.clickable = false;
+		// el.events.onInputOver.removeAll();
+		// el.events.onInputOut.removeAll();
+		// el.events.onInputDown.removeAll();
+		// el.input.useHandCursor = false;
 	})
 
 	if (imp) {
@@ -221,6 +277,30 @@ const nextLevel = (imp, arg) => {
 
 }
 
+var counter = setInterval(timer, 1000)
+
+function timer() {
+	// if (count == 0) {
+	// 	checkClick(checkWin);
+	// } else {
+	count = count - 1;
+	if (count < 0) {
+		// clearInterval(counter);
+		count = 0;
+		// checkClick(false, false, false, true)
+		// checkClick(true);
+		// count = 30;
+
+		return;
+	}
+	if (txt4 && txt3 && txt5) {
+		txt4.text = `Време: ${count}`;
+		txt3.text = `Погодоци: ${correct}`;
+		txt5.text = `Потези: ${moves}`;
+	}
+
+}
+
 function checkClick(obj, x, index) {
 
 	var c = cards[index];
@@ -230,14 +310,15 @@ function checkClick(obj, x, index) {
 
 		if (!firstArray.includes(c.cardValue) && secondArray.includes(c.cardValue)) {
 
-			// imp.enabled = true;
+			imp.enabled = true;
+			correct++;
 			ding.play();
-			tilesLeft -= 1;
+			// tilesLeft -= 1;
 
 			arrOfValues = [];
 			firstArray = [];
 			secondArray = [];
-	
+
 			right = this.add.sprite(200, 0, 'right', {
 				setScale: .5,
 			});
@@ -252,32 +333,46 @@ function checkClick(obj, x, index) {
 			}, 500);
 
 			setTimeout(() => {
-				cards.forEach(el => el.loadTexture('card'));
+				cards.forEach(el => {
+					// el.events.onInputOver.removeAll();
+					// el.events.onInputOut.removeAll();
+					el.loadTexture('card');
+				});
 				nextLevel(imp, this)
 			}, 3000);
 			moves++;
+			c.inputEnabled = true;
+
 
 		} else if (firstArray.includes(c.cardValue)) {
-			
+
+			moves++;
+			imp.enabled = true;
 			// no match
 			wrong = this.add.sprite(200, 0, 'wrong', {
 				setScale: .5,
 			});
+
+
 
 			setTimeout(() => {
 				wrong.destroy(true)
 			}, 500);
 
 			click.play();
-			moves++;
+			c.inputEnabled = true;
 
 		}
 
-		movesText.text = moves;
 
 	}
+	// movesText.text = correct;
 	//  check if player won game
-	if (tilesLeft == 0) {
+	if (count <= 0) {
 		this.winGame();
+		arrOfValues = [];
+		firstArray = [];
+		secondArray = [];
+		imp.enabled = false;
 	}
 }
