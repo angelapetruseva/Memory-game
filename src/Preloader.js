@@ -18,7 +18,7 @@ Memory.Preloader.prototype = {
 		this.load.image('quitButton', 'assets/btn-quit.png');
 		this.load.image('clearButton', 'assets/btn-clearscores.png');
 		
-		this.load.image('bkgd', 'assets/bkgd.png');
+		this.load.image('bkgd', 'assets/bkgd.jpg');
 		this.load.image('selectText', 'assets/text-sizeselect.png');
 		
 		this.load.image('scoreTitle', 'assets/text/text-highscores.png');

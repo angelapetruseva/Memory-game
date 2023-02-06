@@ -37,9 +37,9 @@ var Memory = {
 	findScoreText: function() {
 		var scoreString = "";
 		
-		if (Memory.gridCols == 4 && Memory.gridRows == 3) {
+		if (Memory.gridCols == 3) {
 			scoreString = "3score";
-		} else if (Memory.gridCols == 4 && Memory.gridRows == 4) {
+		} else if (Memory.gridCols == 4) {
 			scoreString = "4score";
 		} else if (Memory.gridCols == 5) {
 			scoreString = "5score";

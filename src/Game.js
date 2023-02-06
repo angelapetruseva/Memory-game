@@ -52,7 +52,7 @@ Memory.Game.prototype = {
 		topMargin = (560 - topBarHeight - columnHeight) / 2 + topBarHeight;
 
 		moves = 0;
-		count = 10;
+		count = 30;
 		correct = 0;
 
 		function destroyer(st) {
@@ -70,8 +70,6 @@ Memory.Game.prototype = {
 		ding = this.add.audio('ding');
 
 		var background = this.add.sprite(0, 0, 'gameBkgd');
-
-		// txt.destroy(true)
 
 		timer = setInterval(() => {
 			if (count === 0) {
@@ -128,7 +126,7 @@ Memory.Game.prototype = {
 			secondArray = [];
 			cards = [];
 			cardValues = [];
-			count = 10;
+			count = 30;
 		}
 
 		if (Memory.supportsStorage()) {
@@ -147,11 +145,6 @@ Memory.Game.prototype = {
 	},
 
 	createGrid: function () {
-
-		// if (timer) {
-		// 	counter = setInterval(timer, 1000)
-		// }
-
 
 		for (var j = 0; j < tilesLeft; j++) {
 			var c = this.add.sprite(leftMargin + (cardWidth + cardSpacing) * j,
@@ -213,7 +206,6 @@ Memory.Game.prototype = {
 
 		box = this.add.sprite(500, 280, 'gameOverBox');
 		box.anchor.set(0.5, 0.5);
-		// box.alpha = 0.9;
 
 		var scoresText = this.add.sprite(500, 130, 'scoreText');
 		scoresText.anchor.set(0.5, 0);
@@ -233,18 +225,15 @@ Memory.Game.prototype = {
 		});
 
 		var menuBtn = this.add.button(500, 240, 'gameOverMenu', function () {
-			// counter = null;
 			this.state.start('MainMenu')
 
 		}, this);
 		menuBtn.anchor.set(0.5, 0);
 		var replayBtn = this.add.button(500, 330, 'gameOverReplay', function () {
-			// counter = null;
 			this.state.start('Game')
 		}, this);
 		replayBtn.anchor.set(0.5, 0);
 		var sizeBtn = this.add.button(500, 420, 'gameOverSize', function () {
-			// counter = null;
 			this.state.start('GridSelect')
 		}, this);
 		sizeBtn.anchor.set(0.5, 0);
@@ -255,7 +244,6 @@ Memory.Game.prototype = {
 
 	quitGame: function () {
 		this.state.start('MainMenu');
-		// counter = null;
 		if (txt2) {
 			txt2.destroy(true);
 		};
@@ -269,7 +257,6 @@ Memory.Game.prototype = {
 		} else {
 			localStorage[scoreString] = Math.min(correct, localStorage[scoreString]);
 		}
-		// counter = null;
 	}
 
 };
@@ -277,15 +264,7 @@ Memory.Game.prototype = {
 
 function nextLevel(imp, arg) {
 
-	if (count == 0) {
-		// counter = null;
-	}
-
 	if (cards.length > 0) {
-
-		if (count == 0) {
-			// counter = null;
-		}
 
 		txt2.destroy(true);
 
