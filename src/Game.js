@@ -14,16 +14,17 @@ var txt3 = null;
 var txt4 = null;
 var txt5 = null;
 
+var helper = true;
+
 var correct;
 var count;
 var moves;
 
+var timer = null;
+
 var rows;
 
 var checkWin;
-
-var counter;
-
 
 var cardWidth;
 var cardSpacing;
@@ -71,6 +72,24 @@ Memory.Game.prototype = {
 		var background = this.add.sprite(0, 0, 'gameBkgd');
 
 		// txt.destroy(true)
+
+		timer = setInterval(() => {
+			if (count === 0) {
+				checkWin();
+				clearInterval(timer)
+			} else if (count > 0) {
+				count = count - 1;
+
+			}
+			if (txt4 && txt3 && txt5) {
+				txt4.text = `Време: ${count}`;
+				txt3.text = `Погодоци: ${correct}`;
+				txt5.text = `Потези: ${moves}`;
+			}
+
+		}, 1000)
+
+
 		txt3 = this.add.text(170, 330, `Погодоци: ${correct}`, {
 			font: "50px Arial",
 			fill: "white",
@@ -90,24 +109,27 @@ Memory.Game.prototype = {
 		cards = [];
 		cardValues = [];
 
-		// cards = new Array(); //  contains actual card elements
-		// cardValues = new Array(); // an array with the value of each card
-
-
 		this.createGrid();
 		this.assignCards();
-
-		counter = setInterval(timer, 1000)
-
-
-		// cards.forEach(el => {
-		// 	el.clickable = false;
-		// 	el.inputEnabled = false;
-		// })
 
 		emitter = this.add.emitter(500, 100, 300);
 		emitter.makeParticles('confetti');
 		emitter.gravity = 200;
+
+		checkWin = () => {
+			this.winGame()
+			destroyer(right)
+			destroyer(wrong)
+			destroyer(txt2)
+			destroyer(txt)
+			cards.forEach(el => el.clickable = false)
+			arrOfValues = [];
+			firstArray = [];
+			secondArray = [];
+			cards = [];
+			cardValues = [];
+			count = 10;
+		}
 
 		if (Memory.supportsStorage()) {
 			this.saveScore();
@@ -122,22 +144,14 @@ Memory.Game.prototype = {
 			txt.destroy(true);
 		};
 
-		checkWin = (sth) => {
-			if (sth) {
-				count = 30;
-				counter = null;
-				this.winGame()
-				destroyer(right)
-				destroyer(wrong)
-				destroyer(txt2)
-				destroyer(txt)
-				// counter = null;
-			}
-
-		}
 	},
 
 	createGrid: function () {
+
+		// if (timer) {
+		// 	counter = setInterval(timer, 1000)
+		// }
+
 
 		for (var j = 0; j < tilesLeft; j++) {
 			var c = this.add.sprite(leftMargin + (cardWidth + cardSpacing) * j,
@@ -151,7 +165,6 @@ Memory.Game.prototype = {
 			fill: "white",
 		});
 
-
 		setTimeout(() => {
 
 			nextLevel(null, this);
@@ -160,6 +173,7 @@ Memory.Game.prototype = {
 	},
 
 	assignCards: function () {
+
 		//  make an array to hold the possible values
 		for (var i = 0; i < 12; i++) {
 			cardValues.push(i);
@@ -181,8 +195,6 @@ Memory.Game.prototype = {
 	},
 
 	winGame: function () {
-		counter = null;
-		// count = 15;
 		if (Memory.supportsStorage()) {
 			this.saveScore();
 		}
@@ -201,7 +213,7 @@ Memory.Game.prototype = {
 
 		box = this.add.sprite(500, 280, 'gameOverBox');
 		box.anchor.set(0.5, 0.5);
-		box.alpha = 0.9;
+		// box.alpha = 0.9;
 
 		var scoresText = this.add.sprite(500, 130, 'scoreText');
 		scoresText.anchor.set(0.5, 0);
@@ -221,17 +233,18 @@ Memory.Game.prototype = {
 		});
 
 		var menuBtn = this.add.button(500, 240, 'gameOverMenu', function () {
+			// counter = null;
 			this.state.start('MainMenu')
 
 		}, this);
 		menuBtn.anchor.set(0.5, 0);
 		var replayBtn = this.add.button(500, 330, 'gameOverReplay', function () {
+			// counter = null;
 			this.state.start('Game')
-
-			
 		}, this);
 		replayBtn.anchor.set(0.5, 0);
 		var sizeBtn = this.add.button(500, 420, 'gameOverSize', function () {
+			// counter = null;
 			this.state.start('GridSelect')
 		}, this);
 		sizeBtn.anchor.set(0.5, 0);
@@ -242,6 +255,10 @@ Memory.Game.prototype = {
 
 	quitGame: function () {
 		this.state.start('MainMenu');
+		// counter = null;
+		if (txt2) {
+			txt2.destroy(true);
+		};
 	},
 
 	saveScore: function () {
@@ -252,79 +269,74 @@ Memory.Game.prototype = {
 		} else {
 			localStorage[scoreString] = Math.min(correct, localStorage[scoreString]);
 		}
+		// counter = null;
 	}
+
 };
 
 
 function nextLevel(imp, arg) {
 
-	txt2.destroy(true);
+	if (count == 0) {
+		// counter = null;
+	}
 
-	setTimeout(function () {
+	if (cards.length > 0) {
 
-		if (arg) {
-			txt = arg.add.text(170, 100, "Одбери која слика се смени:", {
-				font: "50px Arial",
-				fill: "white",
-			});
+		if (count == 0) {
+			// counter = null;
 		}
+
+		txt2.destroy(true);
+
+		setTimeout(function () {
+
+			if (arg) {
+				txt = arg.add.text(170, 100, "Одбери која слика се смени:", {
+					font: "50px Arial",
+					fill: "white",
+				});
+			}
+
+			cards.forEach(el => {
+				el.loadTexture('cards', el.cardValue);
+				el.clickable = true;
+			});
+
+			if (imp) {
+				imp.enabled = true;
+			};
+		}, 500)
+
 
 		cards.forEach(el => {
-			el.loadTexture('cards', el.cardValue);
-			el.clickable = true;
-		});
+			arrOfValues.push(el.cardValue);
+			firstArray.push(el.cardValue);
+			el.clickable = false;
+		})
 
 		if (imp) {
-			imp.enabled = true;
-		};
-	}, 500)
-
-
-	cards.forEach(el => {
-		arrOfValues.push(el.cardValue);
-		firstArray.push(el.cardValue);
-		el.clickable = false;
-	})
-
-	if (imp) {
-		imp.enabled = false;
-	}
-
-	const filteredCardValues = cardValues.filter(function (element) {
-		return arrOfValues.indexOf(element) === -1;
-	});
-
-	const shuffledArrOfValues = arrOfValues.sort(() => Math.random() - 0.5);
-
-	let randomIndex1 = Math.floor(Math.random() * shuffledArrOfValues.length);
-	let randomIndex2 = Math.floor(Math.random() * filteredCardValues.length);
-	let randomElement2 = filteredCardValues[randomIndex2];
-	shuffledArrOfValues.splice(randomIndex1, 1, randomElement2)
-
-	shuffledArrOfValues.forEach(el => secondArray.push(el))
-
-	for (var i = 0; i < arrOfValues.length; i++) {
-		cards[i].cardValue = shuffledArrOfValues[i];
-		cards[i].loadTexture('card');
-	}
-
-}
-
-function timer(counter) {
-	if (count > 0) {
-		count = count - 1;
-	} else if (count <= 0 && checkWin) {
-			count = 10;
-			checkWin(true)
-		}
-		if (txt4 && txt3 && txt5) {
-			txt4.text = `Време: ${count}`;
-			txt3.text = `Погодоци: ${correct}`;
-			txt5.text = `Потези: ${moves}`;
+			imp.enabled = false;
 		}
 
-	// }
-	
+		const filteredCardValues = cardValues.filter(function (element) {
+			return arrOfValues.indexOf(element) === -1;
+		});
+
+		const shuffledArrOfValues = arrOfValues.sort(() => Math.random() - 0.5);
+
+		let randomIndex1 = Math.floor(Math.random() * shuffledArrOfValues.length);
+		let randomIndex2 = Math.floor(Math.random() * filteredCardValues.length);
+		let randomElement2 = filteredCardValues[randomIndex2];
+		shuffledArrOfValues.splice(randomIndex1, 1, randomElement2)
+
+		shuffledArrOfValues.forEach(el => secondArray.push(el))
+
+		for (var i = 0; i < arrOfValues.length; i++) {
+			cards[i].cardValue = shuffledArrOfValues[i];
+			cards[i].loadTexture('card');
+		}
+	}
 
 }
 
@@ -333,81 +345,69 @@ function checkClick(obj, x, index) {
 	var c = cards[index];
 	var imp = this.input.mouse;
 
-	if (c.clickable) {
 
-		if (!firstArray.includes(c.cardValue) && secondArray.includes(c.cardValue)) {
+	if (c) {
+		if (c.clickable) {
 
-			imp.enabled = true;
-			moves++;
-			correct++;
-			ding.play();
+			if (!firstArray.includes(c.cardValue) && secondArray.includes(c.cardValue)) {
 
-			arrOfValues = [];
-			firstArray = [];
-			secondArray = [];
+				imp.enabled = true;
+				moves++;
+				correct++;
+				ding.play();
 
-			if (wrong) {
-				wrong.destroy(true)
+				arrOfValues = [];
+				firstArray = [];
+				secondArray = [];
+
+				if (wrong) {
+					wrong.destroy(true)
+
+				}
+
+				right = this.add.sprite(200, 0, 'right', {
+					setScale: .5,
+				});
+
+				setTimeout(() => {
+					right.destroy(true);
+					txt.destroy(true)
+					txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
+						font: "50px Arial",
+						fill: "white",
+					});
+					c.clickable = true;
+					imp.enabled = true;
+				}, 500);
+
+				setTimeout(() => {
+					cards.forEach(el => {
+						el.loadTexture('card');
+					});
+					nextLevel(imp, this)
+				}, 3000);
+
+			} else if (firstArray.includes(c.cardValue)) {
+
+				moves++;
+				// no match
+				wrong = this.add.sprite(200, 0, 'wrong', {
+					setScale: .5,
+				});
+
+				c.clickable = false;
+				c.inputEnabled = false;
+
+				setTimeout(() => {
+					wrong.destroy(true)
+					c.clickable = true;
+					c.inputEnabled = true;
+				}, 500);
+
+				click.play();
 
 			}
-
-			right = this.add.sprite(200, 0, 'right', {
-				setScale: .5,
-			});
-
-			setTimeout(() => {
-				right.destroy(true);
-				txt.destroy(true)
-				txt2 = this.add.text(170, 100, "Гледај ги сликите внимателно:", {
-					font: "50px Arial",
-					fill: "white",
-				});
-				c.clickable = true;
-				imp.enabled = true;
-			}, 500);
-
-			setTimeout(() => {
-				cards.forEach(el => {
-					el.loadTexture('card');
-				});
-				nextLevel(imp, this)
-			}, 3000);
-			// c.inputEnabled = true;
-
-			// arrOfValues = [];
-			// firstArray = [];
-			// secondArray = [];
-
-		} else if (firstArray.includes(c.cardValue)) {
-
-			moves++;
-			// imp.enabled = true;
-			// no match
-			wrong = this.add.sprite(200, 0, 'wrong', {
-				setScale: .5,
-			});
-
-			c.clickable = false;
-			c.inputEnabled = false;
-
-			setTimeout(() => {
-				wrong.destroy(true)
-				c.clickable = true;
-				c.inputEnabled = true;
-			}, 500);
-
-			click.play();
-
-			// arrOfValues = [];
-			// firstArray = [];
-			// secondArray = [];
-
 		}
+	}
 
-	} 
-	// else if (count = 0) {
-	// 	arrOfValues = [];
-	// 	firstArray = [];
-	// 	secondArray = [];
-	// }
 }
